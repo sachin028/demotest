@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TestDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="Employee_ID" />
+    </Key>
+    <Property Name="Employee_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="Age" Type="int" Nullable="false" />
+    <Property Name="Marital_Status" Type="int" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'TestDB.dbo.view_employee_details' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="view_employee_details">
+    <Key>
+      <PropertyRef Name="Employee_ID" />
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="Age" />
+      <PropertyRef Name="Marital_Status" />
+    </Key>
+    <Property Name="Employee_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="Age" Type="int" Nullable="false" />
+    <Property Name="Marital_Status" Type="varchar" MaxLength="7" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="TestDBModelStoreContainer">
+    <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="view_employee_details" EntityType="Self.view_employee_details" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [view_employee_details].[Employee_ID] AS [Employee_ID], 
+    [view_employee_details].[Name] AS [Name], 
+    [view_employee_details].[Age] AS [Age], 
+    [view_employee_details].[Marital_Status] AS [Marital_Status]
+    FROM [dbo].[view_employee_details] AS [view_employee_details]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

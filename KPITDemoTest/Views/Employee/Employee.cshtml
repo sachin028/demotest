@@ -1,0 +1,111 @@
+﻿@model KPITDemoTest.Models.Employee
+
+@{
+    ViewBag.Title = "Employee";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Employee Data</title>    
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />    
+    <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.12.4.js"></script>
+    
+    <script type="text/javascript">
+
+        $('#btnSubmit').click(function () {
+            alert("ok");
+            var formData = new FormData();
+            formData.append("Name", $("#Name").val());
+            formData.append("Age", $("#Age").val());
+            var Status = $('input[name=Marital_Status]:checked').val();
+            formData.append("Marital_Status", Status.val());
+            $.ajax({
+                url: '@Url.Action("Employee", "Employee")',
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    $("#myrender").html(data);
+                },
+                error: function (a, b, c) {
+                    $("#myrender").html(a.responseText);
+                }
+            });
+            return false;
+        });
+        
+    </script>
+</head>
+<body>
+    @using (@Html.BeginForm("Employee", "Employee", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-1"></div>
+
+                <div class="form-group">
+                    <div class="col-md-12" style="padding-top: 10px">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <br />
+                        <div class="row">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Marital_Status, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    @Html.RadioButtonFor(model => model.Marital_Status, "0", new { @checked = "checked" })
+                                    <span>Single</span>
+                                    @Html.RadioButtonFor(model => model.Marital_Status, "1")
+                                    <span>Married</span>
+                                    @Html.ValidationMessageFor(model => model.Marital_Status, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <button id="btnSubmit" type="submit" class="btn btn-school">Submit</button>                                    
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div id="contentAddress" class="row" style="color: Red">
+                        </div>
+                        <br />
+                        <div class="row table-responsive">
+
+                            @{Html.RenderAction("_EmployeeDetails");}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                                }
+</body>
+</html>

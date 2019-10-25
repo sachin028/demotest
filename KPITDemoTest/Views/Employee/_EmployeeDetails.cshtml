@@ -1,0 +1,77 @@
+﻿@model List<KPITDemoTest.Models.view_employee_details>
+
+@{
+    Layout = null;
+    WebGrid webGrid = new WebGrid(source: Model, canSort: false);
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    $(function () {
+        var id = 0;
+
+        $(document).on('click', '.btnDelete', function () {
+            id = $(this).attr("data-value");
+
+            $.ajax({
+                type: "POST",
+                url: "/Employee/DeleteEmployeeDetails",
+                data: '{id: "' + id + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#dialogEmployee').html(response);
+                    $('#dialogEmployee').dialog('open');
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (a, b, c) {
+                    $("#myrender").html(a.responseText);
+                }
+            });
+            return false;
+        });
+    })
+
+</script>
+
+<link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+
+@using (@Html.BeginForm("_EmployeeDetails", "Employee", FormMethod.Post))
+{
+
+    <div class="panel panel-default">
+        <div class="panel-heading heading-color">Employee Details</div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                @if (Model != null)
+                {
+                    int rowVal = 0;
+                    @webGrid.GetHtml(
+                    htmlAttributes: new { @id = "WebGridAddress", @class = "table" },
+                    //columns: webGrid.Columns(
+                    columns:
+                        webGrid.Columns(webGrid.Column(null, null, format: @<input type="hidden" name="IDHidden"
+                                                                                   value="@item.Employee_ID" />),
+                             webGrid.Column("Sr.No.", format: item => rowVal = rowVal + 1, canSort: false),
+                             webGrid.Column("Name", "Name"),
+                             webGrid.Column("Age", "Age"),
+                             webGrid.Column("Marital_Status", "Marital_Status"),
+                             webGrid.Column(header: "Action",
+                             format: @<text>
+                                @*<a id="btnEdit" data-value='@item.Employee_ID' href='javascript:void(0)'
+                                    class='btnEdit'>Edit</a>*@
+                                <a id="btnDelete" data-value='@item.Employee_ID' href='javascript:void(0)'
+                                   class='btnDelete'>Delete</a>
+                            </text>)))
+                }
+            </div>
+        </div>
+    </div>
+    <div id="dialogEmployee">
+    </div>
+}
+
